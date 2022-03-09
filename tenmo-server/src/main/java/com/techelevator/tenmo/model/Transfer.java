@@ -10,6 +10,8 @@ public class Transfer {
     private int accountTo;
     private BigDecimal amount;
 
+    public Transfer() {}
+
     public Transfer(BigDecimal amount, int accountFrom, int accountTo) {
         this.amount = amount;
         this.accountFrom = accountFrom;
