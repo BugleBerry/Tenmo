@@ -3,11 +3,13 @@ package com.techelevator.tenmo.dao;
 import com.techelevator.tenmo.model.Transfer;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
+import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+@Component
 public class JdbcTransferDao implements TransferDao {
     private final JdbcTemplate jdbcTemplate;
 
@@ -40,31 +42,13 @@ public class JdbcTransferDao implements TransferDao {
 
     @Override
     public void sendTransfer(Transfer transferToSend) {
-//        BigDecimal amountToTransfer = transferToSend.getAmount();
-//        BigDecimal fromAccountBalance = new BigDecimal("0.00");
-//        String query = "SELECT * FROM account WHERE account_id = ?;";
-//        SqlRowSet result = jdbcTemplate.queryForRowSet(query, transferToSend.getAccountFrom());
-//        if (result.next()) {
-//            fromAccountBalance = result.getBigDecimal("balance");
-//        }
-//        assert fromAccountBalance != null;
-//        fromAccountBalance = fromAccountBalance.subtract(amountToTransfer);
-//
-//        BigDecimal toAccountBalance = new BigDecimal("0.00");
-//        query = "SELECT * FROM account WHERE account_id = ?;";
-//        result = jdbcTemplate.queryForRowSet(query, transferToSend.getAccountTo());
-//        if (result.next()) {
-//            toAccountBalance = result.getBigDecimal("balance");
-//        }
-//        toAccountBalance = toAccountBalance.add(amountToTransfer);
-//
-//        query = "UPDATE account SET balance = ? WHERE account_id = ?;";
-//        jdbcTemplate.update(query, fromAccountBalance, transferToSend.getAccountFrom());
-//
-//        query = "UPDATE account SET balance = ? WHERE account_id = ?;";
-//        jdbcTemplate.update(query, toAccountBalance, transferToSend.getAccountTo());
+        BigDecimal amountToTransfer = transferToSend.getAmount();
 
+        String query = "UPDATE account SET balance = balance - ? WHERE account_id = ?;";
+        jdbcTemplate.update(query, amountToTransfer, transferToSend.getAccountFrom());
 
+        query = "UPDATE account SET balance = balance + ? WHERE account_id = ?;";
+        jdbcTemplate.update(query, amountToTransfer, transferToSend.getAccountTo());
     }
 
     @Override
