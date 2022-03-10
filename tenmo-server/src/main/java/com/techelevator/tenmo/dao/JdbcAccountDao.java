@@ -5,6 +5,7 @@ import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
+import javax.sql.DataSource;
 import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
@@ -15,6 +16,10 @@ public class JdbcAccountDao implements AccountDao {
 
     public JdbcAccountDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
+    }
+
+    public JdbcAccountDao(DataSource dataSource) {
+        this.jdbcTemplate = new JdbcTemplate(dataSource);
     }
 
     @Override
@@ -57,10 +62,7 @@ public class JdbcAccountDao implements AccountDao {
     }
 
     public Account mapRowToAccount(SqlRowSet result) {
-        Account account = new Account();
-        account.setAccountId(result.getInt("account_id"));
-        account.setUserId(result.getInt("user_id"));
-        account.setBalance(result.getBigDecimal("balance"));
-        return account;
+        return new Account(result.getBigDecimal("balance"),
+                result.getInt("user_id"), result.getInt("account_id"));
     }
 }
