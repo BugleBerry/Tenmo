@@ -6,6 +6,8 @@ import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
 
 import java.math.BigDecimal;
+import java.util.ArrayList;
+import java.util.List;
 
 @Component
 public class JdbcAccountDao implements AccountDao {
@@ -39,6 +41,19 @@ public class JdbcAccountDao implements AccountDao {
         }
 
         return account;
+    }
+
+    @Override
+    public List<Account> allAccounts() {
+        String query = "SELECT * FROM account;";
+        List<Account> accountList = new ArrayList<>();
+        SqlRowSet results = jdbcTemplate.queryForRowSet(query);
+
+        while(results.next()) {
+            accountList.add(mapRowToAccount(results));
+        }
+
+        return accountList;
     }
 
     public Account mapRowToAccount(SqlRowSet result) {

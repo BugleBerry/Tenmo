@@ -1,13 +1,22 @@
 package com.techelevator.tenmo.model;
 
+import javax.validation.constraints.DecimalMin;
+import javax.validation.constraints.NotBlank;
 import java.math.BigDecimal;
 
 public class Transfer {
     private int transferId;
     private int transferTypeId;
-    private int tranferStatusId;
+    private int transferStatusId;
+
+    @NotBlank
     private int accountFrom;
+
+    @NotBlank
     private int accountTo;
+
+    @NotBlank
+    @DecimalMin(message="transfer can't be zero or negative", value="0.01")
     private BigDecimal amount;
 
     public Transfer() {}
@@ -34,12 +43,12 @@ public class Transfer {
         this.transferTypeId = transferTypeId;
     }
 
-    public int getTranferStatusId() {
-        return tranferStatusId;
+    public int getTransferStatusId() {
+        return transferStatusId;
     }
 
-    public void setTranferStatusId(int tranferStatusId) {
-        this.tranferStatusId = tranferStatusId;
+    public void setTransferStatusId(int tranferStatusId) {
+        this.transferStatusId = tranferStatusId;
     }
 
     public int getAccountFrom() {
