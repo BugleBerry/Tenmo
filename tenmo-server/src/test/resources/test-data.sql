@@ -73,10 +73,13 @@ INSERT INTO transfer_type (transfer_type_desc) VALUES ('Send');
 
 TRUNCATE account, transfer CASCADE;
 
+INSERT INTO tenmo_user (user_id, username, password_hash)
+VALUES (1001, 'user1', 'password'), (1002, 'user2', 'password'), (1003, 'user3', 'password');
+
 INSERT INTO account (account_id, user_id, balance)
-VALUES (1, 1, 1000), (2, 2, 500), (3, 3, 100);
+VALUES (2001, 1001, 1000), (2002, 1002, 500), (2003, 1003, 100);
 
 INSERT INTO transfer (transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount)
-VALUES (1, 2, 2, 1, 2, 100), (2, 2, 3, 3, 2, 500), (3, 2, 3, 1, 1, 100)
+VALUES (1, 2, 2, 2001, 2002, 100), (2, 2, 3, 2003, 2002, 500);
 
 COMMIT;
