@@ -64,7 +64,7 @@ public class TenmoController {
         return transferDao.createTransfer(newTransfer);
     }
 
-    @RequestMapping(path="/transfer/sent", method=RequestMethod.GET)
+    @RequestMapping(path="/transfer/sent", method=RequestMethod.PUT)
     public boolean executeTransfer(@Valid @RequestBody Transfer newTransfer) {
         BigDecimal balanceFrom = accountDao.getAccountById(newTransfer.getAccountFrom()).getBalance();
         BigDecimal balanceTo = accountDao.getAccountById(newTransfer.getAccountTo()).getBalance();

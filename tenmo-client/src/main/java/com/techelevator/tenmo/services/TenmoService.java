@@ -11,6 +11,7 @@ import org.springframework.web.client.RestTemplate;
 
 import javax.print.attribute.standard.Media;
 import java.math.BigDecimal;
+import java.util.ArrayList;
 import java.util.List;
 
 public class TenmoService {
@@ -44,7 +45,7 @@ public class TenmoService {
         return balance;
     }
 
-    public Account[] allAccounts(AuthenticatedUser currentUser) {
+    public List<Integer> allAccounts(AuthenticatedUser currentUser) {
         Account[] accounts = null;
 
         try {
@@ -56,11 +57,14 @@ public class TenmoService {
         } catch(ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
         }
-
-        return accounts;
+        List<Integer> allUserIds = new ArrayList<>();
+        for (Account account : accounts) {
+            allUserIds.add(account.getUserId());
+        }
+        return allUserIds;
     }
 
-    public void createTransfer(Transfer transfer, AuthenticatedUser currentUser) {
+    public Transfer createTransfer(Transfer transfer, AuthenticatedUser currentUser) {
         Transfer newTransfer = null;
         try {
             newTransfer = restTemplate.postForObject(baseUrl + "transfer/create",
@@ -70,6 +74,20 @@ public class TenmoService {
         } catch(ResourceAccessException e) {
             BasicLogger.log(e.getMessage());
         }
+        return newTransfer;
+    }
+
+    public boolean executeTransfer(Transfer transfer, AuthenticatedUser currentUser) {
+        boolean success = false;
+        try {
+            restTemplate.put(baseUrl + "transfer/sent", makeTransferEntity(currentUser, transfer), Transfer.class);
+            success = true;
+        } catch(RestClientResponseException e) {
+            BasicLogger.log(e.getMessage());
+        } catch(ResourceAccessException e) {
+            BasicLogger.log(e.getMessage());
+        }
+        return success;
     }
 
     public Transfer[] allTransfers(AuthenticatedUser currentUser) {

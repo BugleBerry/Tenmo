@@ -9,6 +9,7 @@ import com.techelevator.tenmo.services.ConsoleService;
 import com.techelevator.tenmo.services.TenmoService;
 
 import java.math.BigDecimal;
+import java.util.List;
 
 public class App {
 
@@ -91,7 +92,6 @@ public class App {
     }
 
 	private void viewCurrentBalance() {
-        //BigDecimal balance = tenmoService.getBalance(currentUser.getUser().getId());
         BigDecimal balance = tenmoService.getBalance(currentUser);
         System.out.println("Current balance: " + balance);
 	}
@@ -104,8 +104,9 @@ public class App {
 
         if(transfers.length != 0) {
             String details = consoleService.promptForString("Would you like to see details for a transfer (Y/N)? ");
-            if(details.equals("Y")) {
+            if(details.trim().equals("Y") || details.trim().equals("y")) {
                 int transferId = consoleService.promptForInt("Please enter a transfer id: ");
+                boolean containsId = false;
                 for (Transfer transfer : transfers) {
                     if(transfer.getTransferId() == transferId) {
                         int status = transfer.getTransferStatusId();
@@ -113,8 +114,16 @@ public class App {
                         System.out.println("Received at account: " +  transfer.getAccountTo());
                         System.out.println("Amount: " + transfer.getAmount());
                         System.out.println(status == 2 ? "Approved" : "Rejected");
+                        containsId = true;
                     }
                 }
+                if (!containsId) {
+                    System.out.println("Not a valid response");
+                }
+            } else if (details.trim().equals("N") || details.trim().equals("n")) {
+                System.out.println("Exiting...");
+            } else {
+                System.out.println("Not a valid transfer");
             }
         } else {
             System.out.println("No transfers");
@@ -127,21 +136,37 @@ public class App {
 	}
 
 	private void sendBucks() {
-        Account[] accounts = tenmoService.allAccounts(currentUser);
-        for (Account account : accounts) {
-            System.out.println(account.getUserId());
+        List<Integer> accounts = tenmoService.allAccounts(currentUser);
+        for (Integer account : accounts) {
+            System.out.println(account);
         }
-        System.out.println(currentUser.getUser().getId());
 
         int userId = consoleService.promptForInt("Please pick a user to send to: ");
-        BigDecimal amount = consoleService.promptForBigDecimal("How much do you want to send? ");
+        if (userId != (int)(long)currentUser.getUser().getId() && accounts.contains(userId)) {
+            BigDecimal amount = consoleService.promptForBigDecimal("How much do you want to send? ");
+            if (amount.compareTo(new BigDecimal("0.00")) <= 0 ) {
+                System.out.println("Can't send 0 or a negative amount of funds");
+            } else {
+                Transfer transfer = new Transfer();
+                transfer.setAmount(amount);
+                transfer.setAccountFrom((int)(long)currentUser.getUser().getId());
+                transfer.setAccountTo(userId);
 
-        Transfer transfer = new Transfer();
-        transfer.setAmount(amount);
-        transfer.setAccountFrom((int)(long)currentUser.getUser().getId());
-        transfer.setAccountTo(userId);
+                Transfer newTransfer = tenmoService.createTransfer(transfer, currentUser);
 
-		tenmoService.createTransfer(transfer, currentUser);
+                if (newTransfer.getTransferStatusId() == 2) {
+                    if (tenmoService.executeTransfer(newTransfer, currentUser)) {
+                        System.out.println("Transfer successful!");
+                    } else {
+                        System.out.println("Failed...");
+                    }
+                } else {
+                    System.out.println("Sorry, you don't have enough funds");
+                }
+            }
+        } else {
+            System.out.println("Sorry, not a valid user");
+        }
 	}
 
 	private void requestBucks() {

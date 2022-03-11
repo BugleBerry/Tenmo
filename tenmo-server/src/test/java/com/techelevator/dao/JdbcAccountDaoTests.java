@@ -25,15 +25,15 @@ public class JdbcAccountDaoTests extends BaseDaoTests {
 
     @Test
     public void get_balance_returns_correct_balance() {
-        BigDecimal balance = sut.getBalance(2001);
+        BigDecimal balance = sut.getBalance(1001);
         Assert.assertEquals("Should return same balance",
                 new BigDecimal("1000.00"), balance);
 
-        balance = sut.getBalance(2002);
+        balance = sut.getBalance(1002);
         Assert.assertEquals("Should return same balance",
                 new BigDecimal("500.00"), balance);
 
-        balance = sut.getBalance(2003);
+        balance = sut.getBalance(1003);
         Assert.assertEquals("Should return same balance",
                 new BigDecimal("100.00"), balance);
     }

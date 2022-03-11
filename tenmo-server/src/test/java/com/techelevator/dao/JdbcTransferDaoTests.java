@@ -39,7 +39,7 @@ public class JdbcTransferDaoTests extends BaseDaoTests {
         listTransfers.add(TRANSFER_1);
         listTransfers.add(TRANSFER_2);
         Assert.assertEquals("method should return all transfers associated with accountId 2002", listTransfers,
-                sut.getTransfersByUserId(2002));
+                sut.getTransfersByUserId(1002));
     }
 
     @Test
@@ -50,17 +50,11 @@ public class JdbcTransferDaoTests extends BaseDaoTests {
     }
 
     @Test
-    public void create_transfer_adds_transfer_to_database_correctly() {
-        TRANSFER_3.setTransferStatusId(2);
-        Assert.assertEquals("method should add transfer to database", TRANSFER_3, sut.createTransfer(TRANSFER_3));
-    }
-
-    @Test
     public void send_transfer_updates_accounts_correctly() {
         sut.sendTransfer(TRANSFER_1);
 
-        BigDecimal accountFromBalance = sut2.getBalance(TRANSFER_1.getAccountFrom());
-        BigDecimal accountToBalance = sut2.getBalance(TRANSFER_1.getAccountTo());
+        BigDecimal accountFromBalance = sut2.getBalance(1001);
+        BigDecimal accountToBalance = sut2.getBalance(1002);
         Assert.assertEquals("sending account balance should be correctly decreased",
                 new BigDecimal("900.00"), accountFromBalance);
 
