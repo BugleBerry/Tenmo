@@ -80,6 +80,6 @@ INSERT INTO account (account_id, user_id, balance)
 VALUES (2001, 1001, 1000), (2002, 1002, 500), (2003, 1003, 100);
 
 INSERT INTO transfer (transfer_id, transfer_type_id, transfer_status_id, account_from, account_to, amount)
-VALUES (1, 2, 2, 2001, 2002, 100), (2, 2, 3, 2003, 2002, 500);
+VALUES (3002, 2, 2, 2001, 2002, 100), (3003, 2, 3, 2003, 2002, 500);
 
 COMMIT;

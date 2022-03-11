@@ -1,6 +1,7 @@
 package com.techelevator.tenmo.dao;
 
 import com.techelevator.tenmo.model.Account;
+import org.springframework.beans.factory.annotation.Autowired;
 import org.springframework.jdbc.core.JdbcTemplate;
 import org.springframework.jdbc.support.rowset.SqlRowSet;
 import org.springframework.stereotype.Component;
@@ -10,9 +11,15 @@ import java.math.BigDecimal;
 import java.util.ArrayList;
 import java.util.List;
 
+
 @Component
 public class JdbcAccountDao implements AccountDao {
+
+    @Autowired
+
     private JdbcTemplate jdbcTemplate;
+
+    public JdbcAccountDao() {}
 
     public JdbcAccountDao(JdbcTemplate jdbcTemplate) {
         this.jdbcTemplate = jdbcTemplate;
@@ -23,10 +30,10 @@ public class JdbcAccountDao implements AccountDao {
     }
 
     @Override
-    public BigDecimal getBalance(int accountId) {
-        String query = "SELECT balance FROM account WHERE account_id = ?;";
+    public BigDecimal getBalance(int userId) {
+        String query = "SELECT balance FROM account WHERE user_id = ?;";
         BigDecimal balance = null;
-        SqlRowSet results = jdbcTemplate.queryForRowSet(query, accountId);
+        SqlRowSet results = jdbcTemplate.queryForRowSet(query, userId);
 
         if(results.next()) {
             balance = results.getBigDecimal("balance");
@@ -46,6 +53,14 @@ public class JdbcAccountDao implements AccountDao {
         }
 
         return account;
+    }
+
+    @Override
+    public int getAccountIdByUserId(int userId) {
+        String getAccountFromUserID = "SELECT account_id FROM account WHERE user_id = ?";
+        Integer accountId = jdbcTemplate.queryForObject(getAccountFromUserID, Integer.class,
+                userId);
+        return (int)accountId;
     }
 
     @Override

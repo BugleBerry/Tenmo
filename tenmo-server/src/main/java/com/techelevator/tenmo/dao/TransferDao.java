@@ -6,11 +6,13 @@ import java.math.BigDecimal;
 import java.util.List;
 
 public interface TransferDao {
-    List<Transfer> getTransfersByAccountId(int accountId);
+    List<Transfer> getTransfersByUserId(int userId);
 
-    Transfer getTransferById(Integer transferId);
+    Transfer getTransferById(int transferId);
 
     void sendTransfer(Transfer transferToSent);
 
     Transfer createTransfer(Transfer newTransfer);
+
+    int getAccountIdByUserId(int userId);
 }

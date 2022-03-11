@@ -8,6 +8,8 @@ public class Account {
     private int userId;
     private int accountId;
 
+    public Account() {}
+
     public Account(BigDecimal balance, int userId, int accountId) {
         this.balance = balance;
         this.userId = userId;

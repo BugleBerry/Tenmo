@@ -39,25 +39,26 @@ public class TenmoController {
     }
 
     @RequestMapping(path="/account/{id}/transfers", method=RequestMethod.GET)
-    public List<Transfer> getAllTranfersByAccountId(@PathVariable int id) {
-        return transferDao.getTransfersByAccountId(id);
+    public List<Transfer> getAllTransfersByUserId(@PathVariable int id) {
+        return transferDao.getTransfersByUserId(id);
     }
 
     @RequestMapping(path="/transfer/{id}", method=RequestMethod.GET)
-    public Transfer getTransferbyTransferId(@PathVariable int id) {
+    public Transfer getTransferByTransferId(@PathVariable int id) {
         return transferDao.getTransferById(id);
     }
 
-    @RequestMapping(path="/transfer/create", method=RequestMethod.GET)
+    @RequestMapping(path="/transfer/create", method=RequestMethod.POST)
     public Transfer createTransfer(@Valid @RequestBody Transfer newTransfer) {
-        BigDecimal balance = accountDao.getAccountById(newTransfer.getAccountFrom()).getBalance();
+        int accountId = accountDao.getAccountIdByUserId(newTransfer.getAccountFrom());
+        BigDecimal balance = accountDao.getAccountById(accountId).getBalance();
 
-        if(balance.compareTo(newTransfer.getAmount()) < 0) {
-            newTransfer.setTransferStatusId(3);
-        } else if (newTransfer.getAccountFrom() == newTransfer.getAccountTo()) {
-            newTransfer.setTransferStatusId(3);
-        } else {
-            newTransfer.setTransferStatusId(2);
+            if(balance.compareTo(newTransfer.getAmount()) < 0) {
+                newTransfer.setTransferStatusId(3);
+            } else if (newTransfer.getAccountFrom() == newTransfer.getAccountTo()) {
+                newTransfer.setTransferStatusId(3);
+            } else {
+                newTransfer.setTransferStatusId(2);
         }
 
         return transferDao.createTransfer(newTransfer);
